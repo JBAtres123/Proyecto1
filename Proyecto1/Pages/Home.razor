@@ -1,7 +1,128 @@
 ﻿@page "/"
+@using Proyecto1.Servidor
+@using Proyecto1.models_
+@inject ILogger<Index> Logger
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Gestión de Parqueo</PageTitle>
 
-<h1>Hello, world!</h1>
+<div>
+    <h1>Gestión de Parqueo</h1>
 
-Welcome to your new app.
+    <!-- Sección para Parqueo de Damas -->
+    <div>
+        <h2>Parqueo de Damas (FIFO)</h2>
+        <div>
+            <label for="placa-damas">Placa:</label>
+            <input id="placa-damas" @bind="placaDamas" placeholder="Ingresa la placa" />
+
+            <label for="propietario-damas">Propietario:</label>
+            <input id="propietario-damas" @bind="propietarioDamas" placeholder="Ingresa el propietario" />
+
+            <button @onclick="AgregarVehiculoDama">Agregar</button>
+        </div>
+
+        <div>
+            <button @onclick="SacarVehiculoDama">Sacar Primer Vehículo</button>
+        </div>
+
+        <h3>Lista de Vehículos en Parqueo de Damas:</h3>
+        <pre>@listarVehiculosDamas()</pre>
+    </div>
+
+    <!-- Sección para Parqueo de Caballeros -->
+    <div>
+        <h2>Parqueo de Caballeros (LIFO)</h2>
+        <div>
+            <label for="placa-caballeros">Placa:</label>
+            <input id="placa-caballeros" @bind="placaCaballeros" placeholder="Ingresa la placa" />
+
+            <label for="propietario-caballeros">Propietario:</label>
+            <input id="propietario-caballeros" @bind="propietarioCaballeros" placeholder="Ingresa el propietario" />
+
+            <button @onclick="AgregarVehiculoCaballero">Agregar</button>
+        </div>
+
+        <div>
+            <button @onclick="SacarVehiculoCaballero">Sacar Primer Vehículo</button>
+        </div>
+
+        <h3>Lista de Vehículos en Parqueo de Caballeros:</h3>
+        <pre>@listarVehiculosCaballeros()</pre>
+    </div>
+</div>
+
+@code {
+    // Campos para capturar información del usuario
+    private string placaDamas;
+    private string propietarioDamas;
+
+    private string placaCaballeros;
+    private string propietarioCaballeros;
+
+    // Instancias de los parqueos
+    private ParqueoDamas parqueoDamas = new ParqueoDamas();
+    private ParqueoCaballeros parqueoCaballeros = new ParqueoCaballeros();
+
+    private void AgregarVehiculoDama()
+    {
+        if (!string.IsNullOrWhiteSpace(placaDamas) && !string.IsNullOrWhiteSpace(propietarioDamas))
+        {
+            var vehiculo = new Vehiculo(placaDamas, propietarioDamas, "dama"); // Tipo "dama"
+            parqueoDamas.IngresarVehiculo(vehiculo);
+            // Limpia el campo de texto
+            placaDamas = string.Empty;
+            propietarioDamas = string.Empty;
+        }
+    }
+
+    private void SacarVehiculoDama()
+    {
+        try
+        {
+            parqueoDamas.SalirVehiculo();
+        }
+        catch (InvalidOperationException ex)
+        {
+            Logger.LogError(ex.Message);
+        }
+    }
+
+    private string listarVehiculosDamas()
+    {
+        return parqueoDamas.ListarVehiculos();
+    }
+
+    private void AgregarVehiculoCaballero()
+    {
+        if (!string.IsNullOrWhiteSpace(placaCaballeros) && !string.IsNullOrWhiteSpace(propietarioCaballeros))
+        {
+            var vehiculo = new Vehiculo(placaCaballeros, propietarioCaballeros, "caballero"); // Tipo "caballero"
+            parqueoCaballeros.IngresarVehiculo(vehiculo);
+            // Limpia el campo de texto
+            placaCaballeros = string.Empty;
+            propietarioCaballeros = string.Empty;
+        }
+    }
+
+    private void SacarVehiculoCaballero()
+    {
+        try
+        {
+            parqueoCaballeros.SalirVehiculo();
+        }
+        catch (InvalidOperationException ex)
+        {
+            Logger.LogError(ex.Message);
+        }
+    }
+
+    private string listarVehiculosCaballeros()
+    {
+        return parqueoCaballeros.ListarVehiculos();
+    }
+}
+
+
+
+
+
