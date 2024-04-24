@@ -1,4 +1,5 @@
 ﻿using Proyecto1.models_;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -53,7 +54,7 @@ namespace Proyecto1.Servidor
             // Si después de remover, el PrimerNodo es null, también actualizamos UltimoNodo.
             if (PrimerNodo == null)
             {
-                UltimoNodo = null;
+                UltimoNodo = null; // El parqueo está vacío
             }
 
             return vehiculo; // Devolvemos el vehículo que salió.
@@ -86,13 +87,11 @@ namespace Proyecto1.Servidor
             // Eliminamos el nodo encontrado.
             if (nodoAnterior != null)
             {
-                // Si no es el primer nodo, actualizamos la referencia del nodo anterior.
-                nodoAnterior.Referencia = nodoActual.Referencia;
+                nodoAnterior.Referencia = nodoActual.Referencia; // Si no es el primer nodo
             }
             else
             {
-                // Si es el primer nodo, actualizamos el PrimerNodo.
-                PrimerNodo = nodoActual.Referencia;
+                PrimerNodo = nodoActual.Referencia; // Si es el primer nodo, actualizamos el PrimerNodo.
             }
 
             // Si el nodo eliminado era el último, actualizamos UltimoNodo.
@@ -129,6 +128,7 @@ namespace Proyecto1.Servidor
         }
     }
 }
+
 
 
 

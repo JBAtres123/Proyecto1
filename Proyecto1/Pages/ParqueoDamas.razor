@@ -1,0 +1,69 @@
+﻿@page "/counter"
+@using Proyecto1.Servidor
+@using Proyecto1.models_
+@inject ILogger<Index> Logger
+
+<PageTitle>Counter</PageTitle>
+
+    <h1>Gestión de Parqueo</h1>
+
+    <!-- Sección para Parqueo de Damas -->
+    <div>
+        <h2>Parqueo de Damas (FIFO)</h2>
+        <div>
+            <label for="placa-damas">Placa:</label>
+            <input id="placa-damas" @bind="placaDamas" placeholder="Ingresa la placa" />
+
+            <label for="propietario-damas">Propietario:</label>
+            <input id="propietario-damas" @bind="propietarioDamas" placeholder="Ingresa el propietario" />
+
+            <button @onclick="AgregarVehiculoDama">Agregar</button>
+        </div>
+
+        <div>
+            <button @onclick="SacarVehiculoDama">Sacar Primer Vehículo</button>
+        </div>
+
+        <h3>Lista de Vehículos en Parqueo de Damas:</h3>
+        <pre>@listarVehiculosDamas()</pre>
+    </div>
+
+
+@code {
+        private string placaDamas;
+        private string propietarioDamas;
+
+        // Instancias de los parqueos
+        private ParqueoDamas parqueoDamas = new ParqueoDamas();
+
+        private void AgregarVehiculoDama()
+        {
+            if (!string.IsNullOrWhiteSpace(placaDamas) && !string.IsNullOrWhiteSpace(propietarioDamas))
+            {
+                var vehiculo = new Vehiculo(placaDamas, propietarioDamas, "dama"); // Tipo "dama"
+                parqueoDamas.IngresarVehiculo(vehiculo);
+                // Limpia el campo de texto
+                placaDamas = string.Empty;
+                propietarioDamas = string.Empty;
+            }
+        }
+
+        private void SacarVehiculoDama()
+        {
+            try
+            {
+                parqueoDamas.SalirVehiculo();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
+        private string listarVehiculosDamas()
+        {
+            return parqueoDamas.ListarVehiculos();
+        }
+
+    
+}
